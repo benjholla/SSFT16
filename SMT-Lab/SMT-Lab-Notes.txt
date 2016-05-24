@@ -1,0 +1,42 @@
+Ubuntu 16.04 Fresh Install
+
+# install dependencies
+sudo apt-get install git
+sudo apt-get install libgmp3-dev
+sudo apt-get install libboost-all-dev
+
+git clone https://github.com/barrettcw/CVC4.git
+cd CVC4
+./contrib/get-antlr-3.4
+
+./autogen.sh
+
+# run the autogen.sh command printed at the end of the get-antler-3.4 script
+./configure --with-antlr-dir='pwd'/antlr-3.4 \
+ANTLR='pwd'/antlr-3.4/bin/antlr3 --enable-static \
+--disable-shared --enable-static-binary --with-build=debug
+
+make -j 4
+
+----------
+
+Side Notes
+On Mac remove the --enable-static and --enable-static-binary flags
+
+----------
+
+Compiling GMP manually
+# download gmp library
+wget http://gmplib.org/download/gmp/gmp-6.1.0.tar.xz --no-check-certificate
+
+# unzip
+tar xvfJ gmp-6.1.0.tar.xz
+
+# navigate to unzipped source
+cd gmp-6.1.0
+
+# compile and install
+./configure --enable-cxx
+make
+make check
+sudo make install
