@@ -25,6 +25,10 @@ fmod NATLIST is
   eq isElt(n,n' nl) = (if n == n' then true else isElt(n,nl) fi) .
   eq isElt(n,nil) = false .
 
+  op listInc : NatList Nat -> NatList .
+  eq listInc(nil, n) = nil .
+  eq listInc(n nl, n') = n + n' listInc(nl, n') .
+
 **** alternative equations
 ****  eq isElt(n,nl n nl') = true .
 ****  eq isElt(n,nl) = false [owise] .
