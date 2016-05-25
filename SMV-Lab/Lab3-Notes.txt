@@ -1,0 +1,3 @@
+VM Details
+username: user
+password: password

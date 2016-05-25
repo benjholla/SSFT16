@@ -1,0 +1,48 @@
+MODULE main
+
+VAR
+wolf: boolean;
+goat: boolean;
+cabbage: boolean;
+man: boolean;
+
+IVAR
+carried: {n,w,g,c};
+
+ASSIGN
+init(wolf) := FALSE;
+init(goat) := FALSE;
+init(cabbage) := FALSE;
+init(man) := FALSE;
+
+TRANS
+carried = n -> (next(man)=!man 
+              & next(wolf)=wolf 
+              & next(goat)=goat
+              & next(cabbage)=cabbage);
+
+TRANS
+carried = g -> (next(man)=!man 
+              & next(wolf)=wolf 
+              & next(goat)=!goat
+              & next(cabbage)=cabbage);
+
+TRANS
+carried = w -> (next(man)=!man
+              & next(wolf)=!wolf
+              & next(goat)=goat
+              & next(cabbage)=cabbage);
+
+TRANS
+carried = c -> (next(man)=!man
+              & next(wolf)=wolf
+              & next(goat)=goat
+              & next(cabbage)=!cabbage);
+
+DEFINE
+safe := !(wolf=goat & wolf!=man) & !(goat=cabbage & goat!=man);
+
+INVARSPEC
+!(man & cabbage & goat & wolf);
+
+LTLSPEC !(safe U (man & cabbage & goat & wolf));

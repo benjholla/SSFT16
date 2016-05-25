@@ -11,16 +11,28 @@ cd CVC4
 
 ./autogen.sh
 
-# run the autogen.sh command printed at the end of the get-antler-3.4 script
-./configure --with-antlr-dir='pwd'/antlr-3.4 \
+# use the custom command outputted by autogen.sh instead of the command after this one shown below!
+# but you need to add the "--with-build=debug" for the assertions to work!
+configure --with-antlr-dir=/home/benjholla/Desktop/CVC4/antlr-3.4 ANTLR=/home/benjholla/Desktop/CVC4/antlr-3.4/bin/antlr3 --with-build=debug
+
+#./configure --with-antlr-dir='pwd'/antlr-3.4 \
 ANTLR='pwd'/antlr-3.4/bin/antlr3 --enable-static \
 --disable-shared --enable-static-binary --with-build=debug
 
 make -j 4
 
 ----------
+Hints
 
-Side Notes
+Consider using the Floyd–Warshall algorithm
+
+Node/TNode
+getKind returns operator
+src/expr/node.h and node_meanings.h contains lots of details about node
+
+----------
+
+Installation Notes
 On Mac remove the --enable-static and --enable-static-binary flags
 
 ----------
