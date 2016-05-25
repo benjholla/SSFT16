@@ -78,15 +78,16 @@ starting with $ $ $ $ $ $ .
 
 Hint modify the apples == cakes example
 
+Answer:
 search $ $ $ $ $ $ =>! M:Marking such that countPlace(M:Marking,a) > countPlace(M:Marking,c) .
-
 
 Find out how you can get 5 quarters then 6 apples from 5$s.
 I.e. 
 
+Answer: (remember [] = G, <> = F, O = X, |-> = entails?)
 Maude>  red modelCheck(vm($ $ $ $ $), []~(<> fiveQ /\ (fiveQ |-> nApples(6)))) .
 
-Now try exctracting a path.
+Now try extracting a path.
 
 Maude> load simple
 Maude> load fp-vend
@@ -94,6 +95,7 @@ Now the default module is FP-VENDING-MACHINE .
 
 Find out how to get 3 cakes from 3 $s and 4 quarters.
 
+Answer:
 Maude> red findPath(vm(q q q q $ $ $),nCakes(3)) .
 
 Try out the Mall.

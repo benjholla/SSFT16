@@ -1,0 +1,76 @@
+binary_tree[T : TYPE] : DATATYPE
+BEGIN
+leaf : leaf?
+node(val : T, left : binary_tree, right : binary_tree) : node?
+END binary_tree
+
+obt [T : TYPE,  <= : (total_order?[T])] : THEORY
+BEGIN
+IMPORTING binary_tree[T]
+
+A, B, C: VAR binary_tree
+x, y, z: VAR T
+
+pp: VAR pred[T]
+
+i, j, k: VAR nat
+
+size(A) : nat =
+  reduce_nat(0, (LAMBDA x, i, j: i + j + 1))(A)
+
+ordered?(A) : RECURSIVE bool =
+  (IF node?(A) THEN ((every! y: y<=val(A))(left(A)) AND
+                     (every! y: val(A)<=y)(right(A)) AND
+                     ordered?(left(A)) AND
+                     ordered?(right(A)))
+         ELSE TRUE ENDIF)
+  MEASURE size
+
+insert(x, A): RECURSIVE binary_tree[T] =
+  (CASES A OF
+    leaf: node(x, leaf, leaf),
+    node(y, B, C): (IF x<=y THEN node(y, insert(x, B), C)
+                            ELSE node(y, B, insert(x, C))
+                    ENDIF)
+   ENDCASES)
+  MEASURE size(A)
+
+ordered?_insert_step: LEMMA
+   pp(x) AND every(pp)(A) IMPLIES
+  every(pp)(insert(x, A))
+
+ordered?_insert: THEOREM
+   ordered?(A) IMPLIES ordered?(insert(x, A))
+
+search(x, A): RECURSIVE bool =
+  (CASES A OF
+    leaf: FALSE,
+    node(y, B, C): (IF x = y THEN TRUE
+                         ELSIF x<=y THEN search(x, B)
+                           ELSE search(x, C)
+                    ENDIF)
+   ENDCASES)
+  MEASURE size(A)
+
+search_insert: THEOREM search(y, insert(x, A)) = (x = y OR search(y, A))
+
+
+END obt
+
+obt_eval : THEORY
+  BEGIN
+   IMPORTING obt[int, <=]
+   i, j, k: VAR int
+   A, B, C : VAR (ordered?)
+   ll, ll1, ll2: VAR list[int]
+
+  insert_list(ll : list[int]): RECURSIVE (ordered?)
+    =  (CASES ll OF
+        null : leaf,
+        cons(i, ll1) : insert(i, insert_list(ll1))
+       ENDCASES)
+  MEASURE length(ll)
+
+  test: LEMMA ordered?(insert_list((: 3, 7, 2, -5, 0 :)))
+
+END obt_eval
