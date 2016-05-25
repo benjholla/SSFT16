@@ -1,0 +1,90 @@
+mod QQQ is
+  inc QQ .
+  inc SIMPLE .
+  inc  DISH-OPS .
+endm
+
+mod QQQ-MC is
+ inc QQQ .
+
+ op hasOcc : Dish Thing LocName -> Bool .
+ eq hasOcc(PD(ss:Soup { l:LocName | ls:Soup th:Thing } ), 
+            th:Thing, l:LocName ) = true .
+ eq hasOcc(PD(s:Soup), th:Thing, l:LocName) = false [owise] .
+
+ ops goalP avoidP : Thing LocName -> Prop .
+ eq PD(s:Soup) |= goalP(th:Thing, l:LocName) 
+       = hasOcc(PD(s:Soup),th:Thing,l:LocName) .
+ eq PD(s:Soup) |= avoidP(th:Thing, l:LocName) 
+       = not(hasOcc(PD(s:Soup),th:Thing,l:LocName)) .
+
+**** overloading to take an Occ not just its contents.
+ 
+ op hasOcc : Dish Occ -> Bool .
+ eq hasOcc(d:Dish, < th:Thing, l:Loc >) = hasOcc(d:Dish, th:Thing, l:Loc) .
+
+ ops hasAllOccs hasNoOccs : Dish Occs -> Bool .
+ eq hasAllOccs(d:Dish,none) = true .
+ eq hasAllOccs(d:Dish,o:Occ os:Occs) = 
+     (if hasOcc(d:Dish,o:Occ)
+      then hasAllOccs(d:Dish,os:Occs)
+      else false
+      fi) .
+
+ eq hasNoOccs(d:Dish,none) = true .
+ eq hasNoOccs(d:Dish,o:Occ os:Occs) = 
+     (if hasOcc(d:Dish,o:Occ)
+      then false
+      else hasNoOccs(d:Dish,os:Occs)
+      fi) .
+
+ ops goalsP avoidsP : Occs -> Prop .
+ eq PD(s:Soup) |= goalsP(os:Occs) = hasAllOccs(PD(s:Soup),os:Occs) .
+ eq PD(s:Soup) |= avoidsP(os:Occs) = hasNoOccs(PD(s:Soup),os:Occs) .
+
+ op avoidOcc : Dish Thing LocName -> Dish .
+ eq avoidOcc(PD(ss:Soup { l:LocName | ls:Soup th:Thing }), th:Thing, l:LocName)
+     = PD(ss:Soup { l:LocName | ls:Soup }) .
+ eq avoidOcc(PD(ss:Soup), th:Thing, l:LocName) = PD(ss:Soup) [owise] .
+
+endm
+
+
+***(
+red modelCheck(hrasDish, ~ <> goalP([Shp2 - Yphos],EgfRC)) .
+
+red findPath(hrasDish,goalP([Shp2 - Yphos],EgfRC)) .
+result SimplePath: spath('001.EgfR.irt.Egf '075.Gab2.irt.Egf '012.Gnai1.irt.Egf
+    '116.Gab1.irt.Egf '013.Gnai3.irt.Egf '117.Grb2.irt.Egf '172.Pi3k.irt.Egf
+    '188.Shp2.irt.Egf, PD(
+{CLi | Src [Hras - GDP]}
+{XOut | empty}
+{CLc | RasGrp3 Sos1}
+{EgfRC | Gnai1 Gnai3 Grb2 Pi3k (Egf : [EgfR - Yphos]) [Gab1 - Yphos] [Gab2 -
+    Yphos] [Shp2 - Yphos]}))
+		
+				
+red findPath(hrasDish,goalP([Hras - GTP],CLi)) .
+result SimplePath: spath('001.EgfR.irt.Egf '075.Gab2.irt.Egf
+    '012.Gnai1.irt.Egf '116.Gab1.irt.Egf '013.Gnai3.irt.Egf
+    '117.Grb2.irt.Egf '172.Pi3k.irt.Egf '188.Shp2.irt.Egf
+    '197.Sos1.irt.Egf '529.Hras.irt.Egf, PD(
+{CLi | Src [Hras - GTP]}
+{XOut | empty}
+{CLc | RasGrp3}
+{EgfRC | Gnai1 Gnai3 Grb2 Pi3k (Egf : [EgfR - Yphos]) [Gab1 - Yphos]
+    [Gab2 - Yphos] [Shp2 - Yphos] [Sos1 - Yphos]}))
+	
+
+red findPath(avoidOcc(hrasDish,Sos1,CLc),goalP([Hras - GTP],CLi)) .
+result SimplePath: spath('001.EgfR.irt.Egf '075.Gab2.irt.Egf
+    '012.Gnai1.irt.Egf '116.Gab1.irt.Egf '013.Gnai3.irt.Egf
+    '117.Grb2.irt.Egf '172.Pi3k.irt.Egf '188.Shp2.irt.Egf
+    '207.Src.irt.Egf '440.RasGrp3.irt.Egf '529.Hras.irt.Egf, PD(
+{CLi | [Hras - GTP]}
+{XOut | empty}
+{CLc | empty}
+{EgfRC | Gnai1 Gnai3 Grb2 Pi3k (Egf : [EgfR - Yphos]) [Gab1 - Yphos]
+    [Gab2 - Yphos] [RasGrp3 - Yphos] [Shp2 - Yphos] [Src - act]}))
+
+)

@@ -1,0 +1,176 @@
+fmod DISH-OPS is 
+   inc THEOPS .    
+
+***(
+
+For conversion of rules to net assume single cell and omit cell type/id
+from location 
+
+Loc is Out or LocName 
+
+< thing,loc >  is an Occ (occurrence) --
+  loc identifies occurrence of thing  as supernatant or compartment in cell
+
+
+delOccDish(occ,dish) removes occ from dish -- all of the things at the location
+Odiff(ox1:Occs,ox2:Occs) returns the elements of ox1 that are not in ox2
+   if Odiff(occs1,occs1) = none then occs1 << occs2.
+
+Osame(ox1:Occs,ox2:Occs) returns the elements that are in both ox1 and ox2
+Odiff(ox1:Occs,ox2:Occs) returns the elements that are in ox1 and  not ox2
+
+PL Dish structure 
+  dish is PD(lsoup)
+       lsoup is [locname | tsoup]*
+)
+
+sort Loc .
+***  op Out : -> Loc [ctor] .
+***  op Any : -> Loc [ctor] .  **** for common rules
+subsort LocName < Loc .
+
+***(
+ops CLo CLm CLi CLc : -> LocName .  *** Cell - out,mem,in,cytosol
+ops NUo NUm NUi NUc : -> LocName .  *** Nucleus - out,mem,in,cytosol
+ops MOo MOm MOi MOc : -> LocName .  *** Mitochondria Outer membrane
+ops MIo MIm MIi MIc : -> LocName .  *** Mitochondria Inner membrane
+ops ERo ERm ERi ERc : -> LocName .  *** EndoplasmicReticulum
+ops PXo PXm PXi PXc : -> LocName .  *** PeroXisome
+ops GAo GAm GAi GAc : -> LocName .  *** Golgi Apparatus
+ops LEo LEm LEi LEc : -> LocName .  *** Late Endosomes
+ops LYo LYm LYi LYc : -> LocName .  *** Lysosome
+ops CPo CPm CPi CPc : -> LocName .  *** Clathrin Coated Pits
+*** op LR : -> LocName .  *** Lipid Rafts in the CM
+*** op CC : -> LocName .  *** Clathrin Coated Pits in the CM
+
+)
+
+  sorts Occ Occs .
+  subsort Occ < Occs .
+
+  op <_,_> : Thing Loc -> Occ .
+  op occThing : Occ -> Thing .
+  op occLoc : Occ -> Loc .
+  eq occThing(< th:Thing,l:Loc >) = th:Thing .
+  eq occLoc(< th:Thing,l:Loc >) = l:Loc .
+
+  op none : -> Occs .
+  op __ : Occs Occs -> Occs  [assoc comm id: none] .
+  
+  op size : Occs -> Nat .
+  eq size(none) = 0 .
+  eq size(o:Occ os:Occs) = s(size(os:Occs)) .
+
+**** 15mar01 clt dishes as occs
+  op PD : Occs -> Dish .
+
+**** converting dishes, cells, locations to occs
+**** drop anything out of place
+****08sep13 clt allow rules in occs form
+  op pl2occs : Occs -> Occs .
+  op pl2occs : Dish -> Occs .
+  op pl2occs : Soup -> Occs .  *** don't know what kind of soup
+
+  op dish2occs : Dish -> Occs .
+***  op dsoup2occs : Soup -> Occs .
+  op tsoup2occs : Soup -> Occs .  **** 09july19 
+  op csoup2occs : Soup -> Occs .
+  op lsoup2occs : Soup Loc -> Occs .
+
+****08sep13 clt allow rules in occs form
+  eq pl2occs(occs:Occs) = occs:Occs .
+  eq pl2occs(PD(occs:Occs)) = occs:Occs .
+  eq pl2occs(PD(s:Soup)) = csoup2occs(s:Soup) .
+***  eq pl2occs(s:Soup c:Cell) = dsoup2occs(s:Soup c:Cell) .
+  eq pl2occs(s:Soup l:Location) = csoup2occs(s:Soup l:Location) .
+**** 09jul19 clt -- for thing soups of common rules
+****  eq pl2occs(s:Soup) = dsoup2occs(s:Soup) .
+  eq pl2occs(s:Soup) = none [owise] . **** not valid soup
+
+  eq dish2occs(PD(s:Soup)) = csoup2occs(s:Soup) .
+  eq dish2occs(PD(occs:Occs)) = occs:Occs .
+  
+  eq csoup2occs({ln:LocName | ls:Soup } cs:Soup)
+        = lsoup2occs(ls:Soup, ln:LocName)
+          csoup2occs( cs:Soup) .
+  eq csoup2occs(cs:Soup) = none [owise] .
+
+  eq lsoup2occs(th:Thing ls:Soup, l:Loc) =
+          < th:Thing, l:Loc > lsoup2occs(ls:Soup, l:Loc) .
+  eq lsoup2occs(ls:Soup, l:Loc) = none [owise] .
+       
+
+********* Computing with Occs
+  op member : Occ Occs -> Occs . *** none or occ
+
+**** clt 06aug30
+  eq member(o:Occ, o:Occ ox:Occs) = o:Occ .
+  eq member(o:Occ, ox:Occs) = none [owise] .
+
+
+  op reduceOccs : Occs -> Occs .
+  eq reduceOccs(o:Occ o:Occ ox:Occs) =  reduceOccs(o:Occ ox:Occs) .
+  eq reduceOccs(ox:Occs) = ox:Occs [owise] .
+
+   op Odiff : Occs Occs -> Occs .
+  eq Odiff(none, ox2:Occs)  = none .
+  eq Odiff(o:Occ ox1:Occs, ox2:Occs) =
+     (if (member(o:Occ, ox2:Occs) == none) then o:Occ else none fi)
+     Odiff(ox1:Occs, ox2:Occs) .
+    
+  op Osame : Occs Occs -> Occs .
+  eq Osame(none, ox2:Occs)  = none .
+  eq Osame(o:Occ ox1:Occs, ox2:Occs) =
+     member(o:Occ, ox2:Occs)  Osame(ox1:Occs, ox2:Occs) .
+
+  op addOccs : Occs Occs -> Occs . *** add avoiding duplicates
+  eq addOccs(accum:Occs,ooccs:Occs) = Odiff(accum:Occs,ooccs:Occs) ooccs:Occs .
+
+***(
+*** assuming a dish contains one cell and some outside things
+  op delOccDish : Occ Dish -> Dish .
+  op delOccCSoup : Thing LocName Soup  -> Soup .
+  op delThingSoup : Thing Soup  -> Soup .
+
+**** fixed bug that dropped cell wrapper
+  eq delOccDish(< th:Thing, Out >, PD(th:Thing ds:Soup))  =  PD(ds:Soup) .
+  eq delOccDish(< th:Thing, ln:LocName >, PD([ct:CellType | cs:Soup] ds:Soup))
+      =
+     PD([ct:CellType | delOccCSoup(th:Thing,ln:LocName,cs:Soup)] ds:Soup ) .
+  eq delOccDish(occ:Occ, d:Dish) = d:Dish [owise] .
+
+  eq delOccCSoup(th:Thing, ln:LocName, {ln:LocName | ls:Soup} cs:Soup) = 
+       {ln:LocName | delThingSoup(th:Thing,ls:Soup)} cs:Soup . 
+  eq delOccCSoup(th:Thing, ln:LocName, cs:Soup) = cs:Soup [owise] .
+
+  eq delThingSoup(th:Thing, th:Thing ls:Soup) = ls:Soup .
+  eq delThingSoup(th:Thing, ls:Soup) = ls:Soup [owise] .
+)
+
+**** 13jan12 fixing duplication due to modification modset variables -- 
+  op validModSet : ModSet -> Bool .
+  eq validModSet(m:Modification m:Modification ms:ModSet) =  false .
+  eq validModSet(ms:ModSet) =  true [owise] .
+
+****16apr09  negation consistency
+  eq validModSet(m:AAMOD not(m:AAMOD) ms:ModSet) =  false .
+  eq validModSet(m:SMBIND not(m:SMBIND) ms:ModSet) =  false .	
+
+  op validOccs : Occs -> Bool .
+  eq validOccs(none)  = true .
+  eq validOccs(< th:Thing, l:LocName > ox:Occs) = 
+        (if validThing(th:Thing) then validOccs(ox:Occs) else false fi) .
+
+  op validThing : Thing -> Bool .
+  eq validThing([th:SimpleThing - ms:ModSet]) = validModSet(ms:ModSet) .
+  eq validThing(th1:Thing : th2:Thing) = validComplex(th1:Thing,th2:Thing) .
+
+  op validComplex : Thing Thing -> Bool .
+  eq validComplex(th1:Thing,th2:Thing) =
+       (if validThing(th1:Thing) then  validThing( th2:Thing) else false fi) .
+
+****  eq validThing(th:Thing) = true [owise] .
+
+
+endfm
+

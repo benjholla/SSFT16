@@ -1,0 +1,56 @@
+**** load model-checker
+**** load simple
+**** load vend
+**** load mcvend
+
+mod FP-VENDING-MACHINE is
+  inc MC-VENDING-MACHINE .
+  inc SIMPLE .
+endm
+
+***(
+Maude> red findPath(vm($ $ $ $),nApples(5)) .
+reduce in FVEND : findPath(vm($ $ $ $), nApples(5)) .
+rewrites: 180 in 10ms cpu (2ms real) (18000 rewrites/second)
+result SimplePath: 
+spath('buy-a 'buy-a 'buy-a 'buy-a 'change 'buy-a, vm(q a a a a a))
+
+Maude> red findPath(vm(q q q q $ $ $),nCakes(3)) .
+reduce in FVEND : findPath(vm(q q q q $ $ $), nCakes(3)) .
+rewrites: 71 in 10ms cpu (1ms real) (7100 rewrites/second)
+result SimplePath: spath('change 'buy-c 'buy-c 'buy-c, vm($ c c c))
+
+search $ $ $ $ $ $ =>! M:Marking such that countPlace(M:Marking,a) == countPlace(M:Marking,c) .
+
+Solution 1 (state 25)
+states: 31  rewrites: 83 in 0ms cpu (10ms real) (~ rewrites/second)
+M:Marking --> q q q a a a c c c
+
+No more solutions.
+states: 38  rewrites: 136 in 0ms cpu (126ms real) (~ rewrites/second)
+
+
+Maude> search $ $ $ $ $ $ =>! M:Marking such that countPlace(M:Marking,a) > countPlace(M:Marking,c) .
+search in FVEND : $ $ $ $ $ $ =>! M:Marking such that countPlace(M:Marking, a)
+    > countPlace(M:Marking, c) = true .
+
+Solution 1 (state 34)
+states: 38  rewrites: 106 in 10ms cpu (10ms real) (10600 rewrites/second)
+M:Marking --> a a a a c c c
+
+Solution 2 (state 35)
+states: 38  rewrites: 116 in 10ms cpu (216ms real) (11600 rewrites/second)
+M:Marking --> q a a a a a c c
+
+Solution 3 (state 36)
+states: 38  rewrites: 126 in 10ms cpu (222ms real) (12600 rewrites/second)
+M:Marking --> q q a a a a a a c
+
+Solution 4 (state 37)
+states: 38  rewrites: 136 in 10ms cpu (228ms real) (13600 rewrites/second)
+M:Marking --> q q q a a a a a a a
+
+No more solutions.
+states: 38  rewrites: 136 in 10ms cpu (233ms real) (13600 rewrites/second)
+
+)

@@ -1,0 +1,129 @@
+fmod PROTEIN is pr NAT .
+
+sort Protein .
+sort BProtein .
+subsort BProtein < Protein .
+
+sort Chimera .
+subsort Chimera < BProtein .
+
+sort Peptide .
+subsort Peptide < BProtein .
+
+sort Marble .
+sort Gcode .
+sorts AminoAcid .
+subsort AminoAcid < Protein . 
+
+ops A C T Y S K P N L M V I F D E R H Q W G : -> AminoAcid [ctor] . 
+ops pT pY pS : -> AminoAcid [ctor] .  *** modified amino acids 
+ 
+endfm 
+****************************************************************************
+fmod THING is pr PROTEIN .
+
+sorts Thing Composite Complex .
+sorts DNA Gene Chemical Signature Stress .
+sort SimpleThing .
+subsort Protein Gene Composite DNA Chemical < SimpleThing .
+subsort  Signature Peptide Stress Marble < SimpleThing .
+subsort Complex SimpleThing < Thing .
+
+op (_:_) : Thing Thing -> Complex [ctor assoc comm] .           
+
+endfm
+****************************************************************************
+fmod SOUP is pr THING .
+
+sort MtSoup .
+op empty : -> MtSoup [ctor] .  
+
+sort Soup .
+subsort MtSoup < Soup .
+op __ : Soup Soup -> Soup [ctor assoc comm id: empty] .
+op __ : MtSoup MtSoup -> MtSoup [ditto] .
+
+**** Soup sorts
+
+sort Things .  **** soup of things
+subsort MtSoup < Things .
+subsorts Thing < Things < Soup .
+op __ : Things Things -> Things [ditto] .
+
+sort Location .
+sort Locations .  **** soup of locations
+subsort MtSoup < Locations .
+subsorts Location < Locations < Soup . 
+op __ : Locations Locations -> Locations [ditto] .
+
+endfm
+****************************************************************************
+fmod MODIFICATION is pr SOUP .  
+ 
+sorts Site  Modification ModSet .
+subsort Modification < ModSet . 
+
+****16apr09
+sorts AAMOD FRAG SMBIND ACT OTHER .
+subsort AAMOD FRAG SMBIND ACT OTHER < Modification .
+
+op not : AAMOD -> Modification .
+op not : SMBIND -> Modification .
+op not : ACT -> Modification .
+
+op none : -> ModSet . 
+op __ : ModSet ModSet -> ModSet [assoc comm id: none] . 
+
+op __ : AminoAcid Nat -> Site .
+
+op [_-_] : Marble   ModSet -> Marble   [right id: none ] .
+
+op [_-_] : Protein   ModSet -> Protein   [right id: none ] .
+*** op [_-_] : Family    ModSet -> Family    [right id: none ] . 
+op [_-_] : Composite ModSet -> Composite [right id: none ] . 
+op [_-_] : DNA       ModSet -> DNA       [right id: none ] .
+op [_-_] : Chemical  ModSet -> Chemical  [right id: none ] .
+op [_-_] : Gene      ModSet -> Gene      [right id: none ] .
+
+endfm
+****************************************************************************
+fmod LOCATION is inc MODIFICATION .
+
+sort LocName .
+
+op {_|_} : LocName Soup -> Location [ctor format (n d d d d d)] .
+
+sort CompName .
+subsort CompName < LocName .
+
+endfm
+****************************************************************************
+
+***(
+fmod CELL is inc LOCATION .
+
+sort Cell CellType .
+subsort Cell < Soup .
+
+op [_|_] : CellType Soup -> Cell [ctor] .
+
+op Cell : -> CellType [ctor] .
+
+endfm
+)
+****************************************************************************
+*** fmod DISH is inc CELL .
+fmod DISH is inc LOCATION .
+
+sort Dish .
+op PD : Soup -> Dish [ctor] .
+
+sort Contents .
+subsort Contents < Soup .
+
+endfm
+*******************************************************************************
+fmod THEOPS is inc DISH .
+
+endfm
+****************************************************************

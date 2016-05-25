@@ -1,0 +1,3 @@
+load ../MaudeExamples/simple
+load dish-occs-nocell
+load qqq-mc

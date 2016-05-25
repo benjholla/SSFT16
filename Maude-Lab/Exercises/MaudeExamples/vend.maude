@@ -1,0 +1,38 @@
+
+
+mod VENDING-MACHINE is
+  sorts Coin Item Place Marking .
+  subsorts Coin Item < Place < Marking .
+  op __ : Marking Marking -> Marking [ctor assoc comm id: null] .
+  op null : -> Marking [ctor] .
+  op $ : -> Coin [ctor format (r! o)] .
+  op q : -> Coin [ctor format (r! o)] .
+  op a : -> Item [ctor format (b! o)] .
+  op c : -> Item [ctor format (b! o)] .
+
+  rl [buy-c] : $ => c .
+  rl [buy-a] : $ => a  q .
+  rl [change]: q  q  q  q => $ .
+endm
+
+***(
+Maude> rew $ $ $ .
+result Marking: q a c c
+
+Maude> search $ $ $ =>! a a M:Marking .
+
+Solution 1 (state 8)
+states: 10  rewrites: 12 in 0ms cpu (43ms real) (~ rewrites/second)
+M:Marking --> q q c
+
+Solution 2 (state 9)
+states: 10  rewrites: 12 in 0ms cpu (107ms real) (~ rewrites/second)
+M:Marking --> q q q a
+
+No more solutions.
+states: 10  rewrites: 12 in 0ms cpu (108ms real) (~ rewrites/second)
+
+)
+
+
+

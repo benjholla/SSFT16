@@ -1,0 +1,43 @@
+Maude> load nat-seq.maude 
+Advisory: redefining module NATLIST.
+==========================================
+reduce in NATLIST : head(1 2 3) .
+rewrites: 1 in 0ms cpu (0ms real) (~ rewrites/second)
+result NzNat: 1
+==========================================
+reduce in NATLIST : tail(1 2 3) .
+rewrites: 1 in 0ms cpu (0ms real) (~ rewrites/second)
+result NatList: 2 3
+==========================================
+reduce in NATLIST : head(nil) .
+rewrites: 0 in 0ms cpu (0ms real) (~ rewrites/second)
+result [NatList]: head(nil)
+==========================================
+reduce in NATLIST : tail(nil) .
+rewrites: 1 in 0ms cpu (0ms real) (~ rewrites/second)
+result NatList: nil
+==========================================
+reduce in NATLIST : isElt(4, 1 2 3) .
+rewrites: 10 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: false
+==========================================
+reduce in NATLIST : isElt(2, 1 2 3) .
+rewrites: 6 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: true
+==========================================
+reduce in NATLIST : sum(1 2 3) .
+rewrites: 7 in 0ms cpu (0ms real) (~ rewrites/second)
+result NzNat: 6
+==========================================
+reduce in NATLIST : removeDups(0 3 0 1 2 1 0) .
+rewrites: 4 in 0ms cpu (0ms real) (~ rewrites/second)
+result NatList: 0 3 1 2
+==========================================
+reduce in NATLIST : listInc(1 2 3, 5) .
+rewrites: 7 in 0ms cpu (0ms real) (~ rewrites/second)
+result NatList: 6 7 8
+==========================================
+reduce in NATLIST : isElt(5, listInc(1 2 3, 5)) .
+rewrites: 17 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: false
+Maude> 

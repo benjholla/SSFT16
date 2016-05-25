@@ -1,0 +1,9 @@
+#!/bin/bash
+
+SOURCE="${BASH_SOURCE[0]}"
+DIRECTORY="$( dirname "$SOURCE" )"
+cd "$DIRECTORY"
+
+java  -Xms256m -Xmx1024m -Dcom.apple.mrj.application.apple.menu.about.name=PLAOnline -cp lib/online.jar:lib/iop.jar online.Remote stella.csl.sri.com 7774 pla-launcher.lsp
+
+

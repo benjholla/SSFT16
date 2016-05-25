@@ -1,0 +1,86 @@
+**** load vend.maude
+**** load model-checker
+
+mod MC-VENDING-MACHINE is
+  inc VENDING-MACHINE .
+  inc MODEL-CHECKER .
+  inc NAT .
+
+  op vm : Marking -> State [ctor] .
+  var M : Marking .   var P : Place .   var n : Nat .
+
+  op countPlace : Marking Place -> Nat .
+  eq countPlace(P M,P) = s countPlace(M,P) .
+  eq countPlace(M,P) = 0 [owise] .
+
+  op value : Marking -> Nat .  *** equivalent number of quarters
+  eq value(null) = 0 .
+  eq value(a M) = 3 + value(M) .
+  eq value(c M) = 4 + value(M) .
+  eq value(q M) = s value(M) .
+  eq value($ M) = 4 + value(M) .
+
+  ops fiveQ lte4Q : -> Prop .
+  ops nCakes nApples val : Nat -> Prop .
+  
+  eq vm(M) |= fiveQ = countPlace(M,q) == 5 .
+  eq vm(M) |= lte4Q = countPlace(M,q) <= 4 .
+
+  eq vm(M) |= nApples(n) = countPlace(M,a) == n .
+  eq vm(M) |= nCakes(n) = countPlace(M,c) == n .
+
+  eq vm(M) |= val(n) = value(M) == n .
+
+endm
+
+***(
+
+red modelCheck(vm($ $ $ $), []~ nApples(5)) .
+
+Starting with 5 $s can we get 6 apples
+ without accumulating more than 4 quarters
+Model check the assertion that we can't
+
+red modelCheck(vm($ $ $ $ $), []~ ( lte4Q U nApples(6))) .
+result ModelCheckResult: counterexample(
+{vm($ $ $ $ $),'buy-a}
+{vm($ $ $ $ q a),'buy-a}
+{vm($ $ $ q q a a),'buy-a}
+{vm($ $ q q q a a a),'buy-a}
+{vm($ q q q q a a a a),'change} 
+{vm($ $ a a a a),'buy-a} 
+{vm($ q a a a a a), 'buy-a}, 
+{vm(q q a a a a a a),deadlock})
+
+Can we get 5 quarters and then 6 apples
+red modelCheck(vm($ $ $ $ $), []~ ((<> fiveQ) /\ (fiveQ |-> nApples(6)) )) .
+result ModelCheckResult: counterexample(
+{vm($ $ $ $ $),'buy-a} 
+{vm($ $ $ $ q a),'buy-a} 
+{vm($ $ $ q q a a),'buy-a} 
+{vm($ $ q q q a a a),'buy-a} 
+{vm($ q q q q a a a a),'buy-a} 
+{vm(q q q q q a a a a a),'change} 
+{vm($ q a a a a a),'buy-a}, 
+{vm(q q a a a a a a),deadlock})
+
+Conservation of value:
+red modelCheck(vm($ $ $ $ $), [] val(20)) .
+result Bool: true
+
+
+
+Maude> red modelCheck(vm($ $ $ $ $), [] ( lte4Q U nApples(6))) .
+reduce in MC-VENDING-MACHINE : modelCheck(vm($ $ $ $ $), [](lte4Q U nApples(
+    6))) .
+rewrites: 46 in 10ms cpu (1ms real) (4600 rewrites/second)
+result ModelCheckResult: counterexample(
+{vm($ $ $ $ $),'buy-c} 
+{vm($ $ $ $ c),'buy-c} 
+{vm($ $ $ c c),'buy-c} 
+{vm($ $ c c c),'buy-c}
+{vm($ c c c c), 'buy-c},
+{vm(c c c c c),deadlock})
+
+)
+

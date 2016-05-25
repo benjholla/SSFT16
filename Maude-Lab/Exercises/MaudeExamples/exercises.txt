@@ -1,0 +1,115 @@
+Lines beginning Maude>  mean to type what follows to the Maude prompt.
+Example commands are included in the maude files as comments.
+
+
+
+------------------------------------------------------------------------------
+Using NATLIST
+------------------------------------------------------------------------------
+start Maude (type maude in a terminal window)
+Maude> load nat-list
+
+Try some examples such as those below, or think up your own.
+
+Maude> red head(4 3 2 1) .
+Maude> red tail(4 3 2 1) .
+
+Maude> red head(nil) .
+Maude> red tail(nil) .
+
+Maude> red isElt(4, 1 5 3) .
+Maude> red isElt(2, 3 2 1) .
+
+Maude> red sum(2 4 6 8 10) .
+
+
+------------------------------------------------------------------------------
+Extending NATLIST
+------------------------------------------------------------------------------
+
+Add equations to the NATLIST module to define the function listInc.
+This function takes a NatList and a Nat and adds the Nat
+to each element of the NatList.  For example
+
+   listInc(1 2 3,5) = 6 7 8 
+
+The Maude syntax for addition is the usual infix notation, for example 1 + 2 .
+
+reload nat-list.maude  and try your function.
+
+
+Extra credit:
+
+Add equations to define the function removeDups that takes a NatList nl and 
+returns a NatList such that 
+
+        isElt(n,nl) = isElt(n,removeDups(nl))
+
+for any Nat, n.
+
+For example 
+
+     removeDups(1 1 2 3 2 4 1) = 1 2 3 4
+
+Note that there are several possible solutions, depending on which 
+duplicate(s) you choose to delete.
+
+[nat-list-extended contains possible solution.]
+
+------------------------------------------------------------------------------
+Using the VENDING-MACHINE module
+---------------------------------
+
+Maude> load vend
+
+Now the default module is VENDING-MACHINE
+
+Try rewriting with some sample initial states.
+For example
+
+Maude> rew $ $ $ $ $ $ .
+
+Maude> load model-checker
+Maude> load mcvend
+Now the default module is MC-VENDING-MACHING 
+
+Find all the ways that the final state can have more apples than cakes 
+starting with $ $ $ $ $ $ .
+
+Hint modify the apples == cakes example
+
+search $ $ $ $ $ $ =>! M:Marking such that countPlace(M:Marking,a) > countPlace(M:Marking,c) .
+
+
+Find out how you can get 5 quarters then 6 apples from 5$s.
+I.e. 
+
+Maude>  red modelCheck(vm($ $ $ $ $), []~(<> fiveQ /\ (fiveQ |-> nApples(6)))) .
+
+Now try exctracting a path.
+
+Maude> load simple
+Maude> load fp-vend
+Now the default module is FP-VENDING-MACHINE .
+
+Find out how to get 3 cakes from 3 $s and 4 quarters.
+
+Maude> red findPath(vm(q q q q $ $ $),nCakes(3)) .
+
+Try out the Mall.
+Maude> load vending-mall
+Maude> select VENDING-MALL .
+
+Can you get 4 apples and a $ change stuck in the apple machine.
+Hint: modify the search for 4 quarters stuck change.
+
+Maude> select VENDING-MALL-X .
+
+Now ask if you can get 4 apples and a cake from 4$.
+
+Try out reflection
+Maude> load meta-vend 
+Now the default module is META-VEND 
+
+Try some of the example commands in the file meta-vend.maude
+

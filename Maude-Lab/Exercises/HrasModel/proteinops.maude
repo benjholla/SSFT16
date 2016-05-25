@@ -1,0 +1,254 @@
+fmod PROTEINOPS is inc THEOPS . 
+
+sort HrasGEF .      subsort HrasGEF < BProtein .
+sort KrasGEF .      subsort KrasGEF < BProtein .
+sort MrasGEF .      subsort MrasGEF < BProtein .
+sort NrasGEF .      subsort NrasGEF < BProtein .
+sort Pik3cS .       subsort Pik3cS < BProtein .
+sort Rac1GEF .      subsort Rac1GEF < BProtein .
+sort RalGdsPull .   subsort RalGdsPull < BProtein .
+sort RasS .         subsort RasS < BProtein .
+sort Rras2GEF .     subsort Rras2GEF < BProtein .
+sort RrasGEF .      subsort RrasGEF < BProtein .
+sort Sos12S .       subsort Sos12S < BProtein .
+
+op Egf : -> Peptide  [ctor metadata "(\
+  (category Ligand)\
+  (partof ProEgf)\
+  (synonyms \"Epidermal growth factor\"\
+            \"Urogastrone\"))"] .
+op ProEgf : -> BProtein [ctor metadata "(\
+  (spnumber P01133)\
+  (hugosym EGF)\
+  (contains Egf)\
+  (synonyms \"Pro-epidermal growth factor\"\
+            \"EGF_HUMAN\"))"] .
+
+op EgfR : -> BProtein [ctor metadata "(\
+  (category Receptor)\
+  (spnumber P00533)\
+  (hugosym EGFR)\
+  (synonyms \"Epidermal growth factor receptor\"\
+            \"ERBB1\"\
+            \"Receptor tyrosine-protein kinase ErbB-1\"\
+            \"EGFR_HUMAN\"))"] .
+
+sort GabS .
+subsort GabS < BProtein .
+
+op Gab1 : -> GabS [ctor metadata "(\
+  (spnumber Q13480)\
+  (hugosym GAB1)\
+  (synonyms \"GRB2-associated binding protein 1\"\
+            \"GRB2-associated binder-1\"\
+            \"GABI_HUMAN\"))"] .
+
+op Gab2 : -> GabS [ctor metadata "(\
+  (spnumber Q9UQC2)\
+  (hugosym GAB2)\
+  (synonyms \"GRB2-associated binding protein 2\"\
+            \"GRB2-associated binder-2\"\
+            \"pp100\"\
+            \"KIAA0571\"\
+            \"GABJ_HUMAN\"))"] .
+
+sorts GnaiS Gnai13S .
+subsort Gnai13S < GnaiS < BProtein .
+
+op Gnai1 : -> Gnai13S [ctor metadata "(\
+  (spnumber P63096)\
+  (hugosym GNAI1)\
+  (synonyms \"Guanine nucleotide-binding protein G(i) alpha-1 subunit\"\
+            \"Adenylate cyclase-inhibiting G alpha protein\"\
+            \"GNAI1_HUMAN\"))"] .
+
+op Gnai3 : -> Gnai13S [ctor metadata "(\
+  (spnumber P08754)\
+  (hugosym GNAI3)\
+  (synonyms \"Guanine nucleotide-binding protein G(k) alpha subunit\"\
+            \"G(i)-alpha-3\"\
+            \"GNAI3_HUMAN\"))"] .
+
+op Grb2 : -> BProtein [ctor metadata "(\
+  (spnumber P62993)\
+  (hugosym GRB2)\
+  (synonyms \"Growth factor receptor-bound protein 2\"\
+            \"GRB2 adapter protein\"\
+            \"SH2/SH3 adapter GRB2\"\
+            \"Abundant Src homology protein\"\
+            \"Ash protein\"\
+            \"Ash\"\
+            \"GRB2_HUMAN\"))"] .
+
+sort HrasSort .
+subsort HrasSort < RalGdsPull < BProtein .
+subsort HrasSort < RasS < BProtein .
+op Hras : -> HrasSort [ctor metadata "(\
+  (spnumber P01112)\
+  (hugosym HRAS)\
+  (synonyms \"GTPase HRas\"\
+            \"Transforming protein p21\"\
+            \"v-Ha-ras Harvey rat sarcoma viral oncogene homolog\"\
+            \"Harvey murine sarcoma virus oncogene\"\
+            \"H-Ras-1\"\
+            \"c-H-ras\"\
+            \"HRAS1\"\
+            \"RASH1\"\
+            \"RASH_HUMAN\"))"] .
+
+op Pi3k : -> Composite [ctor metadata "(\
+  (subunits Pik3cs Pik3rs)\
+  (comment  \"PI3 Kinase is a heterodimer of:\"\
+             \"a p110 catalytic subunit: Pik3ca, Pik3cb, Pik3cd or Pik3cg\"\
+             \"a p85 regulatory subunit: Pik3r1, Pik3r2, or Pik3r3 \"))"] .
+
+op Pik3ca : -> Pik3cS [ctor metadata "(\
+  (subunitof Pi3k)\
+  (spnumber P42336)\
+  (hugosym PIK3CA)\
+  (synonyms \"Phosphatidylinositol-45-bisphosphate 3-kinase catalytic subunit alpha isoform\"\
+            \"PI3-kinase p110 subunit alpha\"\
+            \"PtdIns-3-kinase p110\"\
+            \"Pi3k\"\
+            \"PK3CA_HUMAN\"))"] .
+
+op Pik3cb : -> Pik3cS [ctor metadata "(\
+  (subunitof Pi3k)\
+  (spnumber P42338)\
+  (hugosym PIK3CB)\
+  (synonyms \"Phosphatidylinositol-45-bisphosphate 3-kinase catalytic subunit beta isoform\"\
+            \"PI3-kinase p110 subunit beta\"\
+            \"PtdIns-3-kinase p110\"\
+            \"Pi3kbeta\"\
+            \"PK3CA_HUMAN\"))"] .
+
+op Pik3cd : -> Pik3cS [ctor metadata "(\
+  (subunitof Pi3k)\
+  (spnumber O00329)\
+  (hugosym PIK3CD)\
+  (synonyms \"Phosphatidylinositol-45-bisphosphate 3-kinase catalytic subunit delta isoform\"\
+            \"PI3-kinase p110 subunit delta\"\
+            \"PtdIns-3-kinase p110\"\
+            \"Pi3k p110delta\"\
+            \"PK3CA_HUMAN\"))"] .
+
+op Pik3cg : -> Pik3cS [ctor metadata "(\
+  (subunitof Pi3k)\
+  (spnumber P48736)\
+  (hugosym PIK3CG)\
+  (synonyms \"Phosphatidylinositol-45-bisphosphate 3-kinase catalytic subunit gamma isoform\"\
+            \"PI3-kinase p110 subunit gamma\"\
+            \"PtdIns-3-kinase p110\"\
+            \"Pi3kgamma\"\
+            \"PK3CA_HUMAN\"))"] .
+
+sort Pik3rS .
+subsort Pik3rS < BProtein .
+op Pik3rs : -> Pik3rS [ctor metadata "(\
+  (category Family)\
+  (members  Pik3r1 Pik3r2 Pik3r3))"] .
+op Pik3r? : -> Pik3rS [ctor] .
+
+op Pik3r1 : -> Pik3rS [ctor metadata "(\
+  (subunitof Pi3k)\
+  (spnumber P27986)\
+  (hugosym PIK3R1)\
+  (synonyms \"Phosphatidylinositol 3-kinase regulatory alpha subunit\"\
+            \"PI3-kinase p85-alpha subunit\"\
+            \"PtdIns-3-kinase p85-alpha\"\
+            \"GRB1\"\
+            \"P85A_HUMAN\"))"] .
+
+op Pik3r2 : -> Pik3rS [ctor metadata "(\
+  (subunitof Pi3k)\
+  (spnumber O00459)\
+  (hugosym PIK3R2)\
+  (synonyms \"Phosphatidylinositol 3-kinase regulatory beta subunit\"\
+            \"PI3-kinase p85-beta subunit\"\
+            \"PtdIns-3-kinase p85-beta\"\
+            \"P85B_HUMAN\"))"] .
+
+op Pik3r3 : -> Pik3rS [ctor metadata "(\
+  (subunitof Pi3k)\
+  (spnumber Q92569)\
+  (hugosym PIK3R3)\
+  (synonyms \"Phosphatidylinositol 3-kinase regulatory gamma subunit\"\
+            \"PI3-kinase\"\
+            \"p85-gamma subunit\"\
+            \"PtdIns-3-kinase p85-gamma\"\
+            \"p55PIK\"\
+            \"P55G_HUMAN\"))"] .
+
+sort RasGrp3Sort .
+subsort RasGrp3Sort < HrasGEF < BProtein .
+subsort RasGrp3Sort < MrasGEF < BProtein .
+subsort RasGrp3Sort < RrasGEF < BProtein .
+subsort RasGrp3Sort < Rras2GEF < BProtein .
+op RasGrp3 : -> RasGrp3Sort [ctor metadata "(\
+  (category \"Guanine Nucleotide Exchange Factor\")\
+  (spnumber Q8IV61)\
+  (hugosym RASGRP3)\
+  (synonyms \"RAS guanyl releasing protein 3 (calcium and DAG-regulated)\"\
+            \"Calcium and DAG-regulated guanine nucleotide exchange factor III\"\
+            \"Guanine nucleotide exchange factor for Rap1\"\
+            \"CALDAG-GEFIII\"\
+            \"KIAA0846\"\
+            \"GRP3\"\
+            \"GRP3_HUMAN\"))"] .
+
+op Shp2 : -> BProtein [ctor metadata "(\
+  (spnumber Q06124)\
+  (hugosym PTPN11)\
+  (size 597aa 68kD)\
+  (synonyms \"Protein-tyrosine phosphatase non-receptor type 11\"\
+            \"Protein-tyrosine phosphatase 2C\"\
+            \"PTP-2C\"\
+            \"PTP-1D\"\
+            \"SH-PTP3\"\
+            \"SH-PTP2\"\
+            \"Shp2\"\
+            \"SHP-2\"\
+            \"PTP2C\"\
+            \"SHPTP2\"\
+            \"SH2 containing protein tyrosine phosphatase 2\"\
+            \"Tyrosine phosphatase SHP2\"\
+            \"Syp\"\
+            \"SHPTP3\"\
+            \"SHPTP2\"\
+            \"PTNB_HUMAN\"))"] .
+
+sort Sos1Sort .
+subsort Sos1Sort < HrasGEF < BProtein .
+subsort Sos1Sort < MrasGEF < BProtein .
+subsort Sos1Sort < Rac1GEF < BProtein .
+subsort Sos1Sort < Sos12S < BProtein .
+op Sos1 : -> Sos1Sort [ctor metadata "(\
+  (category \"Guanine Nucleotide Exchange Factor\")\
+  (spnumber Q07889)\
+  (hugosym SOS1)\
+  (synonyms \"Son of sevenless protein homolog 1\"\
+            \"SOS-1\"\
+            \"SOS1 guanine nucleotide exchange factor\"\
+            \"Son of sevenless drosophila homolog 1 \"\
+            \"SOS1_HUMAN\"))"] .
+
+op Src : -> BProtein [ctor metadata "(\
+  (spnumber P12931)\
+  (hugosym SRC)\
+  (synonyms \"Proto-oncogene tyrosine-protein kinase Src\"\
+            \"Avian sarcoma virus protein\"\
+            \"ASV\"\
+            \"Tyrosine kinase pp60c-src\"\
+            \"Tyrosine protein kinase SRC-1\"\
+            \"Protooncogene SRC\"\
+            \"Rous sarcoma\"\
+            \"v-src sarcoma (Schmidt-Ruppin A-2) viral oncogene homolog\"\
+            \"p60-Src\"\
+            \"c-Src\"\
+            \"SRC1\"\
+            \"SRC_HUMAN\"))"] .
+
+
+
+
+endfm

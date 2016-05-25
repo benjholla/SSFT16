@@ -1,0 +1,61 @@
+
+fmod NATLIST is
+  pr NAT .
+  sort NatList .
+  subsort Nat < NatList .
+  op nil : -> NatList .
+  op __ : NatList NatList -> NatList [assoc id: nil] .
+
+  vars n n' : Nat . vars nl nl' nl'' : NatList .
+
+  op head : NatList ~> Nat .
+  eq head(n nl) = n .
+
+*** head(nil) is of kind [Nat] not of sort Nat
+
+  op tail : NatList -> NatList .
+  eq tail(n nl) = nl .
+  eq tail(nil) = nil .
+
+  op sum : NatList -> Nat .
+  eq sum(nil) = 0 .
+  eq sum(n nl) = n + sum(nl) .
+
+  op isElt : Nat NatList -> Bool .
+  eq isElt(n,n' nl) = (if n == n' then true else isElt(n,nl) fi) .
+  eq isElt(n,nil) = false .
+
+**** alternative equations
+****  eq isElt(n,nl n nl') = true .
+****  eq isElt(n,nl) = false [owise] .
+
+  op listInc : NatList Nat -> NatList .
+  eq listInc(nil,n) = nil .
+  eq listInc(n' nl, n) = (n' + n) listInc(nl,n) .
+
+
+  op removeDups : NatList -> NatList .
+  eq removeDups( nl n nl' n nl'') =  removeDups(nl n nl' nl'') .
+  eq removeDups(nl) = nl [owise] .
+
+endfm
+
+***(
+red head(1 2 3) .
+red tail(1 2 3) .
+
+red head(nil) .
+red tail(nil) .
+
+red isElt(4, 1 2 3) .
+red isElt(2, 1 2 3) .
+
+red sum(1 2 3) .
+red removeDups(0 3 0 1 2 1 0) .
+
+red listInc(1 2 3, 5) .
+
+red isElt(5,listInc(1 2 3, 5)) .
+
+
+)

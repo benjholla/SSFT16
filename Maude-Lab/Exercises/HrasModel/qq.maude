@@ -1,0 +1,21 @@
+***************** SmallKB/qq.maude  ***************** 
+
+mod QQ is
+inc ALLRULES .
+inc MODEL-CHECKER .
+
+subsort Dish < State .
+
+
+op hrasDish : -> Dish .
+eq hrasDish =
+   PD(
+      {XOut  | Egf }
+      {EgfRC | EgfR }
+      {CLi   | Gnai1 Gnai3 [Hras - GDP] Src }
+      {CLc   | Gab1 Gab2 Grb2 Pi3k RasGrp3 Shp2 Sos1 }
+ ) .
+
+
+endm
+

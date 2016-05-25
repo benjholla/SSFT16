@@ -1,0 +1,42 @@
+fmod MODIFICATIONOPS is
+     inc MODIFICATION .
+
+  op act : -> ACT [ctor 
+                   metadata "((abbrev +) (description \"activated\"))"] .
+  op phos : -> AAMOD [ctor metadata "(\
+   (abbrev p)\
+   (db MOD)\
+   (id 00696)\
+   (term \"phosphorylated residue\"))"] . 
+  op Yphos : -> AAMOD [ctor metadata "(\
+   (abbrev Yp)\
+   (db MOD)\
+   (id 00048)\
+   (term \"O4'-phosphorylated L-tyrosine\"))"] . 
+  op Sphos : -> AAMOD [ctor metadata "(\
+   (abbrev Sp)\
+   (db MOD)\
+   (id 00046)\
+   (term \"O-phospho L-serine\"))"] . 
+  op Tphos : -> AAMOD [ctor metadata "(\
+   (abbrev Tp)\
+   (db MOD)\
+   (id 00047)\
+   (term \"O-phospho L-threonine\"))"] . 
+
+  op GDP : -> SMBIND [ctor metadata "(\
+   (abbrev GDP)\
+   (db CHEBI)\
+   (id 17552)\
+   (term \"Guanosine 5'-diphosphate\"))"] .
+  op GTP : -> SMBIND [ctor metadata "(\
+   (abbrev GTP)\
+   (db CHEBI)\
+   (id 15996)\
+   (term \"Guanosine 5'-triphosphate\"))"] .
+
+   op __ : AminoAcid Nat -> Site .
+   op phos : Site  -> AAMOD .
+
+endfm
+

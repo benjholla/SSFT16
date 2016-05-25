@@ -1,0 +1,39 @@
+#include "parameters.h"
+
+--
+-- The main module works as an environment to the component.
+-- For this exercise, you do not need to modify it.
+--
+
+-- ===============================================================================
+MODULE main
+    VAR
+        Selector_inst : Selector(sensor1_out, sensor2_out, variance_monitor1, variance_monitor2, general_monitor);
+    VAR
+        sensor1_out : value_domain;
+        sensor2_out : value_domainl
+        variance_monitor1 : boolean;
+        variance_monitor2 : boolean;
+        general_monitor : boolean;
+
+    DEFINE
+        out := Selector_inst.out;
+
+
+-- ===============================================================================
+--                               End of module
+-- ===============================================================================
+
+-- ===============================================================================
+MODULE Selector(sensor1_out, sensor2_out, variance_monitor1, variance_monitor2, general_monitor)
+    VAR
+        out : value_domain;
+
+  -- << COMPLETE THIS >>
+  -- << WRITE SOME PROPERTIES TO VERIFY YOUR IMPLEMENTATION >>
+
+
+
+-- ===============================================================================
+--                               End of module
+-- ===============================================================================

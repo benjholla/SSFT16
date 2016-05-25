@@ -1,0 +1,36 @@
+#include "parameters.h"
+
+--
+-- The main module works as an environment to the component.
+-- For this exercise, you do not need to modify it.
+--
+
+-- ===============================================================================
+MODULE main
+    VAR
+        VarMonitor_inst : VarMonitor(In, Last);
+    VAR
+        In : value_domain;
+        Last : value_domain;
+
+    DEFINE
+        Valid := VarMonitor_inst.Valid;
+
+
+-- ===============================================================================
+--                               End of module
+-- ===============================================================================
+
+-- ===============================================================================
+MODULE VarMonitor(In, Last)
+    VAR
+        Valid : boolean;
+
+
+  -- << COMPLETE THIS >>
+  -- << WRITE SOME PROPERTIES TO VERIFY YOUR IMPLEMENTATION >>
+
+
+-- ===============================================================================
+--                               End of module
+-- ===============================================================================

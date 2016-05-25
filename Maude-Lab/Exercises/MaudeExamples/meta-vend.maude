@@ -1,0 +1,110 @@
+***in vend.maude
+
+mod VEND-X is
+  inc VENDING-MACHINE .
+
+  vars M0 M1 : Marking .
+  op has : Marking Marking -> Bool .
+
+  eq has(M0 M1, M1) = true .
+  eq has(M0, M1) = false [owise] .
+
+endm
+
+fmod CONSUMERS is
+inc META-LEVEL .
+
+*** Rule selectors 
+***  op rl_=>_[_]. : Term Term AttrSet -> Rule [ctor] .
+***  op crl_=>_if_[_]. : Term Term Condition AttrSet -> Rule [ctor] .
+
+  op getRuleId : Rule -> Qid .
+  eq getRuleId(rl lhs:Term => rhs:Term [label(q:Qid) attrs:AttrSet ] .)
+       = q:Qid .
+  eq getRuleId(crl lhs:Term => rhs:Term if c:Condition 
+                [label(q:Qid) attrs:AttrSet ] .) 
+      = q:Qid .
+
+  op getLhs : Rule -> Term .
+  eq getLhs(rl lhs:Term => rhs:Term [label(q:Qid) attrs:AttrSet ] .)
+       = lhs:Term .
+  eq getLhs(crl lhs:Term => rhs:Term if c:Condition 
+                [label(q:Qid) attrs:AttrSet ] .) 
+       = lhs:Term .
+
+  op getRhs : Rule -> Term .
+  eq getRhs(rl lhs:Term => rhs:Term [label(q:Qid) attrs:AttrSet ] .)
+       = rhs:Term .
+  eq getRhs(crl lhs:Term => rhs:Term if c:Condition 
+                [label(q:Qid) attrs:AttrSet ] .) 
+       = rhs:Term .
+
+  op getCond : Rule -> Condition .
+  eq getCond(rl lhs:Term => rhs:Term [label(q:Qid) attrs:AttrSet ] .)
+       = nil .
+  eq getCond(crl lhs:Term => rhs:Term if c:Condition 
+                [label(q:Qid) attrs:AttrSet ] .) 
+       = c:Condition .
+
+  var M : Module .   var T : Term .
+  var R : Rule .   var RS : RuleSet . 
+  
+  op consumes : Module Rule Term -> Bool .
+  eq consumes(M,R,T)  =
+    getTerm(metaReduce(M,'has[getLhs(R),T])) == 'true.Bool .
+
+  op consumerRules : Module Term -> QidList .
+  op consumerRules : Module RuleSet Term -> QidList .
+
+  eq consumerRules(M,T) = 
+       consumerRules(M,upRls(getName(M),true),T) .
+  eq consumerRules(M,none,T) = nil .
+  eq consumerRules(M,R RS,T) =
+       (if consumes(M,R,T) then getRuleId(R) else nil fi) 
+       consumerRules(M,RS,T) .
+endfm
+
+
+
+***(
+select CONSUMERS .
+Maude>  red consumerRules(['VEND-X],'$.Coin) .
+result: Sort 'buy-a ; buy-c
+Mauede>  red consumerRules(['VEND-X],'q.Coin) .
+result: Sort 'change
+)
+
+fmod METAREWRITE-LIST is
+****  inc MY-META .
+  inc META-LEVEL .
+
+
+  var M : Module .   vars T T' : Term .
+****  var R : Rule .   var RS : RuleSet . 
+ 
+  var res : Result4Tuple? .
+  var rid : Qid . var ql : QidList .
+
+  op metaRewList : Module QidList Term -> Term .
+  eq metaRewList(M,nil,T) = T .
+  ceq metaRewList(M,rid ql,T) = metaRewList(M,ql,T')
+    if res := metaXapply(M, T, rid, none, 0, unbounded, 0) 
+    /\
+       T' := if res :: Result4Tuple then getTerm(res) else T fi .
+
+endfm
+
+fmod META-VEND is
+  inc CONSUMERS .
+  inc METAREWRITE-LIST .
+endfm
+
+***(
+Maude> red metaRewList(['VENDING-MACHINE], 'change 'buy-a,                       '__['q.Coin,'q.Coin,'q.Coin,'q.Coin]) .
+result GroundTerm: '__['q.Coin,'a.Item]
+
+Maude> red metaRewList(['VENDING-MACHINE], 'buy-a 'change,
+                       '__['q.Coin,'q.Coin,'q.Coin,'q.Coin]) .
+result Constant: '$.Coin
+
+)

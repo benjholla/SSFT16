@@ -1,0 +1,32 @@
+fmod LOCATIONOPS is
+     inc LOCATION .
+
+op CLm : -> LocName [ctor metadata "(\
+   (celltype Animal)\
+   (definition \"Plasma Membrane\"))"] .
+
+op CLi : -> LocName [ctor metadata "(\
+   (celltype Animal)\
+   (definition \"Stuck to the inside of the plasma membrane or\"\
+               \"bound to another protein which is in the CLi or\"\
+               \"bound to the inner side of a protein in the CLm\"))"] .
+
+op CLo : -> LocName [ctor metadata "(\
+   (celltype Animal)\
+   (definition \"Stuck to the outside of the plasma membrane or\"\
+               \"bound to another protein which is in the CLo or\"\
+               \"bound to the outer side of a protein in the CLm\"))"] .
+
+op XOut : -> LocName [ctor metadata "(\
+   (celltype any)\
+   (definition \"Outside of and not stuck to any cell\"))"] .
+
+op CLc : -> LocName [ctor metadata "(\
+   (celltype Animal)\
+   (definition \"Cytoplasm\"))"] .
+
+
+op EgfRC : -> CompName [ctor] .    *** EgfR complex
+
+endfm
+

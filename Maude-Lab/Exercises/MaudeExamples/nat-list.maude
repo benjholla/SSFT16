@@ -1,0 +1,46 @@
+
+fmod NATLIST is
+  pr NAT .
+  sort NatList .
+  subsort Nat < NatList .
+  op nil : -> NatList .
+  op __ : NatList NatList -> NatList [assoc id: nil] .
+
+  vars n n' : Nat . vars nl nl' nl'' : NatList .
+
+  op head : NatList ~> Nat .
+  eq head(n nl) = n .
+
+*** head(nil) is of kind [Nat] not of sort Nat
+
+  op tail : NatList -> NatList .
+  eq tail(n nl) = nl .
+  eq tail(nil) = nil .
+
+  op sum : NatList -> Nat .
+  eq sum(nil) = 0 .
+  eq sum(n nl) = n + sum(nl) .
+
+  op isElt : Nat NatList -> Bool .
+  eq isElt(n,n' nl) = (if n == n' then true else isElt(n,nl) fi) .
+  eq isElt(n,nil) = false .
+
+**** alternative equations
+****  eq isElt(n,nl n nl') = true .
+****  eq isElt(n,nl) = false [owise] .
+
+endfm
+
+***(
+red head(1 2 3) .
+red tail(1 2 3) .
+
+red head(nil) .
+red tail(nil) .
+
+red isElt(4, 1 2 3) .
+red isElt(2, 1 2 3) .
+
+red sum(1 2 3) .
+
+)

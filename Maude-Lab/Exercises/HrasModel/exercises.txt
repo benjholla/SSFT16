@@ -1,0 +1,93 @@
+Lines beginning Maude>  mean to type what follows to the Maude prompt.
+
+*** start Maude (type maude (or maude.<os>64) in a terminal window)
+Maude> load all
+
+*** Now you are working in module QQ .
+*** View the initial state.
+
+Maude> red hrasDish .
+
+*** Try executing the model using Maude's default strategy.
+
+Maude> rew hrasDish .
+
+*** You can step through the execution by limiting the rewrite to 1 step
+*** and then using the cont (continue) command.
+
+
+Maude> rew[1] hrasDish .
+Maude> cont 1 .
+...
+Maude> cont 1 .
+
+*** is [Hras - GTP] reachable?
+Maude> search [1] hrasDish =>+ PD(soup:Soup {CLi | [Hras - GTP]}) .
+
+Solution 1 (state 333)
+states: 334  rewrites: 1182 in 11ms cpu (11ms real) (102098 rewrites/second)
+soup:Soup -->
+{XOut | empty}
+{CLc | Gab1 Grb2 Sos1}
+{EgfRC | Gnai1 Gnai3 Pi3k (Egf : [EgfR - Yphos]) [Gab2 - Yphos] [RasGrp3 -
+    Yphos] [Shp2 - Yphos] [Src - act]}
+
+*** To see the path to a search result 
+
+Maude> show path labels 333 .
+
+**** is there another solution?
+cont 1 .
+
+
+*** try finding paths using model checking 
+Maude> load load-mc
+
+*** is there a pathway leading to [Shp2 - Yphos] in the EgfRC location?
+Maude> red modelCheck(hrasDish, ~ <> goalP([Shp2 - Yphos],EgfRC)) .
+
+*** use the findPath function to get a nicer path representation
+Maude> red findPath(hrasDish,goalP([Shp2 - Yphos],EgfRC)) .
+
+*** find a path to [Hras - GTP]
+Maude> red findPath(hrasDish,goalP([Hras - GTP],CLi)) .
+
+*** Is Sos1 necessary?
+Maude> red findPath(avoidOcc(hrasDish,Sos1,CLc),goalP([Hras - GTP],CLi)) .
+
+*** A single knockout for [Hras - GTP] is a protein that if removed 
+*** makes [Hras - GTP] unreachable.
+*** Find at least one single knockout (other than Hras,Egf, or EgfR)
+
+*** A double knockoutfor [Hras - GTP] is a pair of proteins
+*** such that neither is a single knockout, but removing both  
+*** makes [Hras - GTP] unreachable.
+
+
+************ Working with PLAOnline 
+
+To launch PLAOnline: 
+Make sure launcher-stella (in PLALauncher) is executable.  If you are using 
+zsh or similar, in PLALauncher do chmod a+x launcher-stella)
+
+now, double click on launcher-stella
+A launcher window should appear (a terminal window will start up and tell you what is going on when the connection is being made.)
+Clicking on one of the models in the left panel will give you a brief 
+description, a link to a guide -- things to do in this model, and a 
+launch button.  Pressing the launch button will start PLA with the selected
+model.
+
+The Guide for SmallKB make few assumptions about your knowledge of PLA
+and is a good place to get acquainted with the features.
+
+The Guide for STM7 gives some background about the model and then
+goes directly into the EgfDish -- the biggest model and walks you 
+through some queries.
+
+The lab session will be an opportunity to make sure it works for you
+and get you started.   You are free to explore on your own at anytime.
+This is the official PLA online client.
+
+
+
+ 

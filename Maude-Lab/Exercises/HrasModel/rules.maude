@@ -1,0 +1,163 @@
+*********1*********2*********3*********4*********5*********6*********7****
+***
+***  rules.maude  for CLTs Rule Making Quiz
+***
+**************************************************************************
+mod RULES is inc ALLOPS .
+
+var xout : Soup .
+vars clm cli clc nuc : Soup .
+var sig : Soup .
+var egfrc : Soup .
+vars erksmods : ModSet .
+
+
+rl[001.EgfR.irt.Egf]:
+  {XOut  | xout Egf                     }
+  {EgfRC | egfrc EgfR                   }
+  =>
+  {XOut  | xout                         }
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) } .
+  -----------------------------------------
+  *** ~/PLA/Models/SmallKB2/evidence/EgfR.irt.Egf.001.txt
+
+*** Gab1--
+
+rl[116.Gab1.irt.Egf]:
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) gnai13s:Gnai13S                }
+  {CLc   | clc   Gab1                                                  }
+  =>
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) gnai13s:Gnai13S [Gab1 - Yphos] }
+  {CLc   | clc                                                         } .
+  ------------------------------------------------------------------------
+  *** ~/PLA/Models/SmallKB2/evidence/Gab1.irt.Egf.116.txt
+
+*** Gab2--
+
+rl[075.Gab2.irt.Egf]:
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf)                }
+  {CLc   | clc   Gab2                                  }
+  =>
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) [Gab2 - Yphos] }
+  {CLc   | clc                                         } .
+  --------------------------------------------------------
+  *** ~/PLA/Models/SmallKB2/evidence/Gab2.irt.Egf.075.txt
+
+*** Gnai1--
+
+rl[012.Gnai1.irt.Egf]:
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf)       }
+  {CLi   | cli   Gnai1                        }
+  =>
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) Gnai1 }
+  {CLi   | cli                                } .
+  -----------------------------------------------
+  *** ~/PLA/Models/SmallKB2/evidence/Gnai1.irt.Egf.012.txt
+
+*** Gnai3--
+
+rl[013.Gnai3.irt.Egf]:
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf)       }
+  {CLi   | cli   Gnai3                        }
+  =>
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) Gnai3 }
+  {CLi   | cli                                } .
+  -----------------------------------------------
+  *** ~/PLA/Models/SmallKB2/evidence/Gnai3.irt.Egf.013.txt
+
+*** Grb2--
+
+rl[117.Grb2.irt.Egf]:
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf)      }
+  {CLc   | clc   Grb2                        }
+  =>
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) Grb2 }
+  {CLc   | clc                               } .
+  -----------------------------------------------
+  *** ~/PLA/Models/SmallKB2/evidence/Grb2.irt.Egf.117.txt
+
+*** Hras--
+
+rl[529.Hras.irt.Egf]:
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) [gab:GabS - Yphos]
+                  [hrasgef:HrasGEF - Yphos] Pi3k [Shp2 - Yphos] }
+  {CLi   |  cli   [Hras - GDP]                                  }
+  =>
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) [gab:GabS - Yphos]
+                  [hrasgef:HrasGEF - Yphos] Pi3k [Shp2 - Yphos] }
+  {CLi   | cli    [Hras - GTP]                                  } .
+  ---------------------------------------------------------------
+  *** ~/PLA/Models/SmallKB2/evidence/Hras.irt.Egf.529.txt
+
+***(
+rl[529.Hras.irt.Egf]:
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) [Gab1 - Yphos]
+                  [hrasgef:HrasGEF - Yphos] Pi3k [Shp2 - Yphos] }
+  {CLi   |  cli   [Hras - GDP]                                  }
+  =>
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) [Gab1 - Yphos]
+                  [hrasgef:HrasGEF - Yphos] Pi3k [Shp2 - Yphos] }
+  {CLi   | cli    [Hras - GTP]                                  } .
+  ---------------------------------------------------------------
+  *** ~/PLA/Models/SmallKB2/evidence/Hras.irt.Egf.529.txt
+)***
+
+*** Pi3k--
+
+rl[172.Pi3k.irt.Egf]:
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf)      }
+  {CLc   | clc     Pi3k                      }
+  =>
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) Pi3k }
+  {CLc   | clc                               } .
+  ----------------------------------------------
+  *** ~/PLA/Models/SmallKB2/evidence/Pi3k.irt.Egf.172.txt
+
+*** RasGrp3--
+
+rl[440.RasGrp3.irt.Egf]:
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) [Src - act]                   }
+  {CLc   | clc   RasGrp3                                              }
+  =>
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) [Src - act] [RasGrp3 - Yphos] }
+  {CLc   | clc                                                        } .
+  ---------------------------------------------------------------------
+  *** ~/PLA/Models/SmallKB2/evidence/RasGrp3.irt.Egf.440.txt
+
+*** Shp2--
+
+rl[188.Shp2.irt.Egf]:
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf)                 }
+  {CLc   | clc   Shp2                                   }
+  =>
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf)  [Shp2 - Yphos] }
+  {CLc   | clc                                          } .
+  ---------------------------------------------------------
+  *** ~/PLA/Models/SmallKB2/evidence/Shp2.irt.Egf.188.txt
+
+*** Sos1--
+
+rl[197.Sos1.irt.Egf]:
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) Grb2                }
+  {CLc   | clc   Sos1                                       }
+  =>
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) Grb2 [Sos1 - Yphos] }
+  {CLc   | clc                                              } .
+  -------------------------------------------------------------
+  *** ~/PLA/Models/SmallKB2/evidence/Sos1.irt.Egf.197.txt
+
+*** Src--
+
+rl[207.Src.irt.Egf]:
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) [Shp2 - Yphos]             }
+  {CLi   | cli   Src                                               }
+  =>
+  {EgfRC | egfrc ([EgfR - Yphos] : Egf) [Shp2 - Yphos] [Src - act] }
+  {CLi   | cli                                                     } .
+  ---------------------------------------------------------------------
+  *** ~/PLA/Models/SmallKB2/evidence/Src.irt.Egf.207.txt
+
+
+
+
+endm

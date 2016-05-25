@@ -1,0 +1,26 @@
+load theops
+load modificationops
+load locationops
+load proteinops
+
+******************************
+fmod ALLOPS is
+ inc THEOPS .
+ inc MODIFICATIONOPS .
+ inc LOCATIONOPS .
+ inc PROTEINOPS .
+
+endfm
+******************************
+ load rules
+
+******************************
+mod ALLRULES is
+ inc RULES .
+endm
+******************************
+load model-checker
+load qq.maude
+
+
+

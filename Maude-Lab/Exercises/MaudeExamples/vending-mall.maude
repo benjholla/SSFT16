@@ -1,0 +1,130 @@
+
+mod VENDING-MALL is
+  inc VENDING-MACHINE .
+
+  sorts Machine Goods Mall .
+  subsort Machine Goods < Mall .
+  op mt : -> Mall .
+  op __ : Mall Mall -> Mall [ctor assoc comm id: mt] .
+
+  op m : Item Marking -> Machine [ctor] .
+  op g : Place -> Goods [ctor] .
+
+  var M : Marking . var C : Coin . var I : Item .
+
+  rl [coin-in] : m(I, M) g(C) => m(I, M C) .
+  rl [apple-out] : m(a, M a) => m(a, M)  g(a) .
+  rl [cake-out] : m(c, M c) => m(c, M)  g(c) .
+
+endm
+
+***(
+Maude> rew m(a,null) m(c,null) g($) g($) g($) g($) .
+result Mall: g(a) g(a) m(a, q q c c) m(c, null)
+
+Maude> search m(a,null) m(c,null) g($) g($) g($) g($) =>! X:Mall g(a) g(a) g(a) g(a) g(c) .
+
+No solution.
+states: 735  rewrites: 2232 in 40ms cpu (169ms real) (55800 rewrites/second)
+
+Maude> search m(a,null) m(c,null) g($) g($) g($) g($) =>+  m(a, q q q q) X:Mall .
+Solution 1 (state 725)
+states: 726  rewrites: 2214 in 50ms cpu (312ms real) (44280 rewrites/second)
+X:Mall --> g(a) g(a) g(a) g(a) m(c, null)
+
+
+Maude> search m(a,null) m(c,null) g($) g($) g($) g($) =>!  m(a, $) X:Mall .
+Solution 1 (state 725)
+states: 726  rewrites: 2214 in 50ms cpu (312ms real) (44280 rewrites/second)
+X:Mall --> g(a) g(a) g(a) g(a) m(c, null)
+
+No more solutions.
+states: 735  rewrites: 2232 in 60ms cpu (356ms real) (37200 rewrites/second)
+
+Maude> search m(a,null) m(c,null) g($) g($) g($) g($) =>!  m(a, $) X:Mall .
+search in MULTI-VENDING-MACHINE : ((g($) g($) g($) g($)) m(c, null)) m(a, null)
+    =>! X:Mall m(a, $) .
+
+No solution.
+states: 735  rewrites: 2232 in 30ms cpu (278ms real) (74400 rewrites/second)
+
+Maude> search m(a,null) m(c,null) g($) g($) g($) g($) =>!  g(a) g(a) g(c) g(c) X:Mall .
+Solution 1 (state 634)
+states: 693  rewrites: 2113 in 30ms cpu (68ms real) (70433 rewrites/second)
+X:Mall --> m(a, q q) m(c, null)
+
+No more solutions.
+states: 735  rewrites: 2232 in 50ms cpu (130ms real) (44640 rewrites/second)
+
+)
+
+
+mod VENDING-MALL-X is
+  inc VENDING-MALL .
+
+  vars M M' : Marking .
+  vars C C' : Coin .
+  vars i i' : Item .
+
+  rl [coin-xfer] :  m(i, M C)  m(i',M') => m(i, M) m(i',M' C)  .
+
+endm
+
+***(
+
+Maude> rew [1] m(a, null) m(c, null) g($) g($) g($) g($) .
+
+Maude> cont 1 .
+rewrites: 1 in 0ms cpu (0ms real) (~ rewrites/second)
+result Mall: m(a, null) m(c, $ $ $ $)
+Maude> cont 1 .
+rewrites: 1 in 0ms cpu (0ms real) (~ rewrites/second)
+result Mall: m(a, $) m(c, $ $ $)
+....
+
+
+Maude> search in VENDING-MALL-X : ((g($) g($) g($) g($)) m(c, null)) m(a,    null) =>+ X:Mall g(a) g(a) g(a) g(a) g(c) .
+
+Solution 1 (state 1687)
+states: 1688  rewrites: 7196 in 170ms cpu (480ms real) (42329 rewrites/second)
+X:Mall --> m(a, null) m(c, null)
+
+No more solutions.
+states: 1690  rewrites: 7209 in 170ms cpu (515ms real) (42405 rewrites/second)
+
+Maude> show path 1687 .
+state 0, Mall: g($) g($) g($) g($) m(a, null) m(c, null)
+===[ rl g(C) m(I:Item, M) => m(I:Item, M C) [label coin-in] . ]===>
+state 1, Mall: g($) g($) g($) m(a, $) m(c, null)
+===[ rl g(C) m(I:Item, M) => m(I:Item, M C) [label coin-in] . ]===>
+state 5, Mall: g($) g($) m(a, $ $) m(c, null)
+===[ rl g(C) m(I:Item, M) => m(I:Item, M C) [label coin-in] . ]===>
+state 19, Mall: g($) m(a, $ $ $) m(c, null)
+===[ rl g(C) m(I:Item, M) => m(I:Item, M C) [label coin-in] . ]===>
+state 58, Mall: m(a, $ $ $ $) m(c, null)
+===[ rl $ => q a [label buy-a] . ]===>
+state 157, Mall: m(a, $ $ $ q a) m(c, null)
+===[ rl m(a, a M) => g(a) m(a, M) [label apple-out] . ]===>
+state 325, Mall: g(a) m(a, $ $ $ q) m(c, null)
+===[ rl $ => q a [label buy-a] . ]===>
+state 575, Mall: g(a) m(a, $ $ q q a) m(c, null)
+===[ rl m(a, a M) => g(a) m(a, M) [label apple-out] . ]===>
+state 864, Mall: g(a) g(a) m(a, $ $ q q) m(c, null)
+===[ rl $ => q a [label buy-a] . ]===>
+state 1137, Mall: g(a) g(a) m(a, $ q q q a) m(c, null)
+===[ rl m(a, a M) => g(a) m(a, M) [label apple-out] . ]===>
+state 1340, Mall: g(a) g(a) g(a) m(a, $ q q q) m(c, null)
+===[ rl $ => q a [label buy-a] . ]===>
+state 1475, Mall: g(a) g(a) g(a) m(a, q q q q a) m(c, null)
+===[ rl m(a, a M) => g(a) m(a, M) [label apple-out] . ]===>
+state 1559, Mall: g(a) g(a) g(a) g(a) m(a, q q q q) m(c, null)
+===[ rl q q q q => $ [label change] . ]===>
+state 1616, Mall: g(a) g(a) g(a) g(a) m(a, $) m(c, null)
+===[ rl m(i, M C) m(i', M') => m(i, M) m(i', M' C) [label coin-xfer] . ]===>
+state 1652, Mall: g(a) g(a) g(a) g(a) m(a, null) m(c, $)
+===[ rl $ => c [label buy-c] . ]===>
+state 1675, Mall: g(a) g(a) g(a) g(a) m(a, null) m(c, c)
+===[ rl m(c, c M) => g(c) m(c, M) [label cake-out] . ]===>
+state 1687, Mall: g(a) g(a) g(a) g(a) g(c) m(a, null) m(c, null)
+
+)
