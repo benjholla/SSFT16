@@ -67,8 +67,11 @@ Node TheoryIdl::ppRewrite(TNode atom) {
     NodeManager* nm = NodeManager::currentNM();
     switch (atom.getKind()) {
       case kind::EQUAL: {
-        Node l_le_r = nm->mkNode(kind::LEQ, atom[0], atom[1]);
         Assert(atom[0].getKind() == kind::MINUS);
+        // x − y = c
+        // can be rewritten as
+        // x − y <= c /\ x − y >= c
+        Node l_le_r = nm->mkNode(kind::LEQ, atom[0], atom[1]);
         Node negated_left = nm->mkNode(kind::MINUS, atom[0][1], atom[0][0]);
         const Rational& right = atom[1].getConst<Rational>();
         Node negated_right = nm->mkConst(-right);
@@ -77,30 +80,49 @@ Node TheoryIdl::ppRewrite(TNode atom) {
       }
 
       case kind::LT: {
-        // x < y 
+        Assert(atom[0].getKind() == kind::MINUS);
+        // x − y < c
         // can be rewritten as
-        // x <= y - 1
-        Node yMinus1 = nm->mkConst(atom[1].getConst<Rational>()-1);
-        return nm->mkNode(kind::LEQ, atom[0], yMinus1);
+        // x − y <= c − 1
+        const Rational& c = atom[1].getConst<Rational>();
+        Node cMinus1 = nm->mkConst(c-1);
+        return nm->mkNode(kind::LEQ, atom[0], cMinus1);
       }
 
       case kind::LEQ:
-        break; // already rewritten
+        return atom; // already rewritten
 
       case kind::GT: {
-        // x > y
+        Assert(atom[0].getKind() == kind::MINUS);
+        // x − y > c
         // can be rewritten as
-        // y < x
-        // can be rewritten as
-        // y <= x - 1  (or just call LT)
+        // y − x < −c
+        const Rational& c = atom[1].getConst<Rational>();
+        Node negativeC = nm->mkConst(-c);
+        Node yMinusXLessThanNegativeC = nm->mkNode(kind::LT, atom[0], negativeC);
+        return ppRewrite(yMinusXLessThanNegativeC);
       }
 
       case kind::GEQ: {
-        // todo
+        Assert(atom[0].getKind() == kind::MINUS);
+        // x − y >= c
+        // can be rewritten as
+        // y − x <= −c
+        Node yMinusX = nm->mkNode(kind::MINUS, atom[0][0], atom[0][1]);
+        const Rational& c = atom[1].getConst<Rational>();
+        Node negativeC = nm->mkConst(-c);
+        return nm->mkNode(kind::LEQ, yMinusX, negativeC);
       }
 
       case kind::NOT:{
-        // todo
+        // !(expression)
+        Node leq = ppRewrite(atom[0]);
+        // x-y <= expression
+        Assert(atom[0].getKind() == kind::MINUS);
+        // !(x-y <= expression)
+        // can be rewritten as
+        // x-y > expression
+        return ppRewrite(nm->mkNode(kind::GT, leq[0], leq[1]));
       }
 
       default:
