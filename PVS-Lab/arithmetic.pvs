@@ -1,0 +1,140 @@
+  arithmetic : THEORY
+BEGIN
+  x,y,v: VAR real
+ %Applied (then (skolem!)(ground$)) to each formula
+ %Proved by decision procedures
+  arith: THEOREM
+    x < 2*y AND y < 3*v IMPLIES 3*x < 18*v
+
+  %Not proved; statement is false.
+  badarith: CONJECTURE
+    x < 2*y AND y < 3*v IMPLIES 3*x < 17*v
+
+  %Not proved; statement true but non-linear
+  badarith2: CONJECTURE
+    x<0 AND y<0 IMPLIES x*y>0
+
+  i, j, k: VAR int
+  %Proved by decision procedures  
+  intarith: THEOREM
+    2*i < 5 AND i > 1 IMPLIES i = 2
+
+  %Not proved; stmt. true of integers but not reals.
+  badarith3: CONJECTURE
+    2*x < 5 AND x > 1 IMPLIES x = 2
+
+  f: [real -> real]
+
+  eq1: THEOREM x = f(x) IMPLIES f(f(f(x))) = x
+
+  g : [real, real -> real]
+
+  eq2: THEOREM x = f(y) IMPLIES g(f(y + 2 - 2), x + 2) = g(x, f(y) + 2)
+
+  range : CONJECTURE i > 0 AND i < 6 IMPLIES i = 1 OR i = 2 OR i = 4
+OR i = 5 OR i = 3
+
+
+  %Typechecks but generates an unprovable
+  %proof obligation
+  baddiv: CONJECTURE
+    (x/y) > v IMPLIES x > (y*v)
+
+  %Typechecks, generates provable proof obligation;
+  %stmt. false (nonlinear)
+  baddiv2: CONJECTURE
+    y/=0 AND (x/y) > v IMPLIES x > (y*v)
+
+  %Typechecks, provable proof obligation,  and proves.
+  anotherdiv: THEOREM
+    y /= 0 AND (x/y) > (v/y) IMPLIES ((x-v)/y) > 0
+
+END arithmetic
+
+
+decisions: THEORY
+  BEGIN
+   x,y,v: VAR real
+   f: [real -> real]
+
+   eq1: THEOREM x = f(x) IMPLIES f(f(f(x))) = x
+
+   g : [real, real -> real]
+
+   eq2: THEOREM x = f(y) IMPLIES g(f(y + 2 - 2), x + 2) = g(x, f(y) + 2)
+
+   arith: THEOREM  %Proved by decision procedures
+     x < 2*y AND y < 3*v IMPLIES 3*x < 18*v
+
+   badarith: CONJECTURE %Not proved; statement is false.
+     x < 2*y AND y < 3*v IMPLIES 3*x < 17*v
+
+   badarith1: CONJECTURE %Not proved; statement true but non-linear
+     x<0 AND y<0 IMPLIES x*y>0
+
+   i, j, k: VAR int
+ 
+   intarith: THEOREM %Proved by decision procedures  
+     2*i < 5 AND i > 1 IMPLIES i = 2
+
+   badarith2: CONJECTURE  %Not proved; stmt. true of integers but not reals.
+     2*x < 5 AND x > 1 IMPLIES x = 2
+
+   range : THEOREM  %Proved by decision procedures
+     i > 0 AND i < 3 IMPLIES i = 1 OR i = 2
+
+  END decisions
+
+  division: THEORY
+BEGIN
+  x, y : VAR real
+
+  div1 : FORMULA 
+    x /= y IMPLIES (y - x)/(x - y) < 0
+
+END division
+
+types : THEORY
+ BEGIN
+  % functions
+  f : [nat -> nat]
+  i, j, k : VAR nat
+  f_prop : LEMMA 
+     (f WITH [(i) := j])(i) = j
+
+  f_ext: LEMMA
+     (LAMBDA i: IF i > 0 THEN i - 1 ELSE 0 ENDIF)
+  =  (LAMBDA i: IF i = 0 THEN 0 ELSE i - 1 ENDIF)
+
+  % tuples
+  t : [nat, [nat -> nat]]
+  t_prop1 : LEMMA
+      proj_2((i, f)) = f
+
+  t_ext : LEMMA
+     (proj_1(t), proj_2(t)) = t
+
+  t_update: LEMMA
+      t WITH [`1 := i, `2 := f] = (i, f)
+
+  % records
+  r : [# left : nat, right : [nat -> nat] #]
+  r_prop1: LEMMA
+     right((# left := i, right := f #)) = f
+
+  r_prop : LEMMA
+    right(r WITH [(right)(i) := j])(i) = j
+
+  r_ext1: LEMMA
+    r WITH [(left) := left(r)] = r
+
+  r_ext2: LEMMA
+    (# left := left(r), right := right(r) #) = r WITH [(left) := left(r)]
+
+ END types
+  
+test: THEORY
+ BEGIN
+  test: CONJECTURE (FORALL (i, j: nat): i + j > i -j)
+
+ END test

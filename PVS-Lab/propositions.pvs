@@ -1,0 +1,45 @@
+propositions : THEORY
+  BEGIN
+
+  A, B, C: bool
+
+  prop: THEOREM
+       (A IMPLIES (B IMPLIES C)) AND (A IMPLIES B) AND A
+       IMPLIES C
+
+  pierce: THEOREM
+       ((A IMPLIES B) IMPLIES A) IMPLIES A
+
+  ex_middle: THEOREM
+       A OR NOT A
+
+  K: THEOREM
+     A IMPLIES (B IMPLIES A)
+
+  distrib: THEOREM
+     (A AND (B OR C)) = ((A AND B) OR (A AND C))
+
+  END propositions
+
+
+predicate: THEORY
+  BEGIN
+   T : TYPE
+   x, y, z: VAR T
+   P, Q : [T -> bool]
+
+   pred_calc: THEOREM
+      (FORALL x: P(x) AND Q(x))
+      IMPLIES (FORALL y: P(y)) AND (FORALL x: Q(x))
+
+   drinker: CONJECTURE
+     (EXISTS x: P(x) => (FORALL y: P(y)))
+
+   S: TYPE+
+   PP, QQ: [S->bool]
+   xx, yy: VAR S
+   drinkers: THEOREM
+     (EXISTS xx: PP(xx) => (FORALL yy: PP(yy)))
+  
+
+  END predicate

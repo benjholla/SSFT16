@@ -1,0 +1,65 @@
+# download pvs
+./bin/relocate
+
+# run pvs
+./pvs
+
+# note M-x means "meta" + x keys, ctrl-x k kills the buffer
+
+# change pvs context to directory where arithmetic and proposition files are
+M-x cc then edit path and press enter
+
+# open proposition file
+ctrl-c ctrl-f propositions.pvs
+
+# run type check
+M-x tc
+
+# run prover (prover runs on the equation that was currently selected)
+M-x pr
+
+# Prover commands
+Rule? (flatten)
+
+# split the first flattened result
+Rule? (split -1)
+
+# shows the siblings
+M-x sib
+
+# split the last result
+Rule? (split -1)
+
+# show/edit the proof text hierarchy
+M-x edit-proof
+
+# show the proof hierarchy
+M-x show-proof
+
+# step through the proof 
+M-x x-step-proof
+
+# quit prover
+Rule? q
+
+# simplify using BDDs
+Rule? (bddsimp)
+
+# show strategy (then type a strategy such as bddsimp to show the strategy)
+ctrl-c ctrl-h s
+
+# convert equals in the if and only ifs
+Rule? (iff)
+
+# skolemize and keep (keep means don't rename variables)
+Rule? (skeep)
+
+# replace with y
+(inst - "y")
+
+# hail mary just try a bunch of stuff...
+(grind)
+
+# hail mary just try a bunch of stuff...
+# and show your work
+(grind$)
