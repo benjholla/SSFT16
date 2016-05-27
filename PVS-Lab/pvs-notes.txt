@@ -63,3 +63,94 @@ Rule? (skeep)
 # hail mary just try a bunch of stuff...
 # and show your work
 (grind$)
+
+################## session 2 ##################
+
+# Recap
+
+# change context
+M-x cc
+
+# write file
+M-x ctrl-c ctrl-f
+
+# type check
+# M-x tc
+
+# prover
+M-x pr
+
+# prover with steps
+M-x x-step-proof
+
+# exit emacs
+ctrl-x ctrl-c
+
+# return to previous buffer
+ctrl-x b
+
+# interrupt emacs
+ctrl-g
+
+# interrupt proofs
+ctrl-c ctrl-c
+
+# type reload if you crash to lisp
+(restore)
+
+# flattens proposition
+Rule? (flatten)
+
+# splits proposition n
+Rule? (split n)
+
+# propositional simplification
+Rule? (prop)
+
+# simplifies using bdd library (will give a result, but expensive, last resort)
+Rule? (bddsimp)
+
+# skolemize and keep (don't rename variables)
+Rule? (skeep)
+
+Rule? (inst n "a")
+Rule? (inst? n)
+Rule? (inst-cp n) / ()
+Rule? (induct "x")
+Rule? (induct-)
+Rule? (assert)
+Rule? (grind)
+
+# list rules
+M-x help
+
+######### New stuff
+
+# rewrites the current proposition using another theory
+(auto-rewrite-theory "real_props")
+
+# use yices to give a counter example
+(yices)
+
+# show the proof verifications
+M-x show-tccs
+
+# lift a block of ifs out
+(lift-if)
+
+(apply-extensionality)
+
+# undo n steps
+(undo 3)
+
+# flatten, split and repeat
+(ground)
+
+# create a new file
+M-x nf
+
+# show tccs
+M-x tccs
+
+# type check and prove
+M-x tcp

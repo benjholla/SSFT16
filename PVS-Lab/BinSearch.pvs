@@ -1,0 +1,28 @@
+BinSearch   [ N: nat ]
+		: THEORY
+
+  BEGIN
+
+    ARR : TYPE = [below(N) -> real]
+    A, B: VAR ARR
+
+    ordered?(A): bool =
+      (FORALL (i: below(N-1)): A(i) <= A(i+1))
+
+    x: VAR real
+
+    binsearch(A, x, (hi:below(N)), (lo: upto(hi))):
+      RECURSIVE subrange(lo,hi)
+      =
+      (IF lo = hi
+        THEN lo
+	ELSE
+	  (LET mid = lo + ndiv((hi-lo),2) IN
+	    IF A(mid) < x
+	    THEN binsearch(A, x, hi, mid+1)
+	    ELSE binsearch(A, x, mid, lo)
+	    ENDIF)
+        ENDIF)
+	MEASURE hi-lo
+
+  END BinSearch
